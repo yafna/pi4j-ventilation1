@@ -1,0 +1,75 @@
+
+plugins {
+    id 'java'
+    id 'org.hidetake.ssh' version '2.11.2'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+configurations {
+    scpAntTask
+    sshTask
+}
+
+dependencies {
+    implementation 'com.pi4j:pi4j-core:1.4'
+    implementation 'org.slf4j:slf4j-api:1.7.32'
+    implementation 'org.slf4j:slf4j-log4j12:1.7.32'
+
+    scpAntTask group: 'com.jcraft', name: 'jsch', version: '0.1.55'
+    scpAntTask group: 'org.apache.ant', name: 'ant-jsch', version: '1.10.13'
+}
+
+remotes {
+    pinoto {
+        host = pihost
+        user = piuser
+        password = pipassword
+    }
+}
+
+ant.taskdef(
+        name: 'scp',
+        classname: 'org.apache.tools.ant.taskdefs.optional.ssh.Scp',
+        classpath: configurations.scpAntTask.asPath)
+
+task runJar() {
+    group 'zzz'
+    doLast {
+        ssh.run {
+            session(remotes.pinoto) {
+                execute 'java -cp code/vent1-1.0-SNAPSHOT.jar com.github.yafna.vent1.Main'
+
+            }
+        }
+    }
+}
+
+task uploadJar() {
+    group 'zzz'
+    doLast {
+        ant.scp(todir: "$piuser:$pipassword@$pihost:/home/$piuser/code/") {
+            fileset(dir: 'build/libs/') {
+                include(name: '**.jar')
+            }
+        }
+    }
+}
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes(
+                'Main-Class': 'com.github.yafna.vent1.Main2'
+        )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
