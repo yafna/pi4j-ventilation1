@@ -77,7 +77,7 @@ public class DhtQuery implements Runnable {
             log.debug("DTH11 Humidity = " + h + " Temperature = " + c);
             counter.set(0);
         } else {
-            log.debug("DTH11 Data not good, skip , step {}", counter.incrementAndGet());
+            log.info("DTH11 Data not good, skip , step {}", counter.incrementAndGet());
             if(counter.get() > 10000){
                 counter.set(100);
             }
