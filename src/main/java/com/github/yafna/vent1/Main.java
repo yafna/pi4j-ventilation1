@@ -1,13 +1,10 @@
 package com.github.yafna.vent1;
 
-import com.github.yafna.raspberry.grovepi.GrovePi;
-import com.github.yafna.raspberry.grovepi.devices.GroveTemperatureAndHumiditySensor;
-import com.github.yafna.raspberry.grovepi.pi4j.GrovePi4J;
 import com.github.yafna.vent1.humidity.DHT11;
-import com.github.yafna.vent1.pressure.DPS310;
+import com.github.yafna.vent1.i2c.pressure.DPS310;
 import com.github.yafna.vent1.relay.Relay;
-import com.pi4j.io.gpio.Pin;
-import com.pi4j.io.gpio.RaspiPin;
+import com.pi4j.io.i2c.I2CBus;
+import com.pi4j.io.i2c.I2CFactory;
 import com.pi4j.wiringpi.Gpio;
 import org.slf4j.LoggerFactory;
 
@@ -15,65 +12,30 @@ import java.io.IOException;
 
 public class Main {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(Main.class);
+    private static final int GROVEPI_ADDRESS = 4;
 
-    public static void main(String[] args) throws InterruptedException {
-                if (Gpio.wiringPiSetup() == -1) {
+    public static void main(String[] args) throws InterruptedException, IOException, I2CFactory.UnsupportedBusNumberException {
+        if (Gpio.wiringPiSetup() == -1) {
             log.error(" ==>>  GPIO wiringPi SETUP FAILED");
             throw new IllegalStateException("setup failed");
         }
-//        try( Relay relay = new Relay()) {
-//            Thread.sleep(1000);
-//            relay.setOnLevel(1);
-//            Thread.sleep(2000);
-//            relay.setOnLevel(2);
-//            Thread.sleep(2000);
-//            relay.setOnLevel(4);
-//            Thread.sleep(2000);
-//            relay.setOnLevel(6);
-//            Thread.sleep(2000);
-//            relay.turnOff();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
+        I2CBus i2c = I2CFactory.getInstance(I2CBus.BUS_1);
         log.warn("dps310 loading ");
-        try {
-            DPS310 dps = new DPS310();
-            dps.run();
-        }catch (Exception e){
+        try (DPS310 dps1 = new DPS310(i2c, DPS310.DPS310_ADDRESS_1);
+             DPS310 dps2 = new DPS310(i2c, DPS310.DPS310_ADDRESS_2);
+             Relay relay = new Relay()) {
+            DHT11 humiditySensor = new DHT11(0);
+            relay.setOnLevel(6);
+            Thread.sleep(2000);
+            relay.turnOff();
+            for (int i = 0; i < 3; ++i) {
+                log.warn("dps1 temp {} pressure {}", dps1.getTemperature(), dps1.getPressure());
+                log.warn("dps2 temp {} pressure {}", dps2.getTemperature(), dps2.getPressure());
+                log.warn("dht11 temp {} hum {}", humiditySensor.getTemperature(), humiditySensor.getHumidity());
+                Thread.sleep(2000);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
-//        try {
-//            DPS310 dps = new DPS310(RaspiPin.GPIO_09);
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
-//        try {
-//            DPS310 dps = new DPS310(RaspiPin.GPIO_00);
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }try {
-//            DPS310 dps = new DPS310(RaspiPin.GPIO_02);
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
-
-//        if (Gpio.wiringPiSetup() == -1) {
-//            log.error(" ==>>  GPIO wiringPi SETUP FAILED");
-//            throw new IllegalStateException("setup failed");
-//        }
-//        Pin wpi1 = RaspiPin.GPIO_07;
-//        Pin wpi2 = RaspiPin.GPIO_30;
-//        try (DHT11 dht = new DHT11(0)) {
-//            for (int i = 0; i < 30; i++) {
-//                Thread.sleep(5000);
-//                log.warn("{}, ttt {}", i, dht.getTemperature());
-//                log.warn("{}, hhh {}", i, dht.getHumidity());
-//            }
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            log.error(e.getLocalizedMessage(), e);
-//        }
     }
 }

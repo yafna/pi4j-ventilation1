@@ -28,6 +28,6 @@ public class DHT11 implements AutoCloseable {
 
     @Override
     public void close() {
-        scheduler.shutdownNow();
+        scheduler.shutdown();
     }
 }
