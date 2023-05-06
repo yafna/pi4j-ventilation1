@@ -1,15 +1,17 @@
 package com.github.yafna.vent1;
 
-import com.github.yafna.vent1.humidity.DHT11;
+import com.github.yafna.vent1.buttons.FourBlock;
 import com.github.yafna.vent1.i2c.GroveLCD;
-import com.github.yafna.vent1.i2c.pressure.DPS310;
-import com.github.yafna.vent1.relay.Relay;
+import com.pi4j.io.gpio.GpioController;
+import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory;
 import com.pi4j.wiringpi.Gpio;
+import com.pi4j.wiringpi.GpioUtil;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Scanner;
 
 public class Main {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(Main.class);
@@ -20,20 +22,37 @@ public class Main {
             log.error(" ==>>  GPIO wiringPi SETUP FAILED");
             throw new IllegalStateException("setup failed");
         }
+        Scanner scanner = new Scanner(System.in);
+
+        GpioUtil.enableNonPrivilegedAccess();
+        GpioController gpioController = GpioFactory.getInstance();
         I2CBus i2c = I2CFactory.getInstance(I2CBus.BUS_1);
-        try(GroveLCD lcd = new GroveLCD(i2c)){
-            lcd.setText("ffuuuu");
-            Thread.sleep(1000);
-            lcd.setRGB(0, 250,30);
-        }catch (IOException | InterruptedException e){
+        try (FourBlock fB = new FourBlock(gpioController);
+             GroveLCD lcd = new GroveLCD(i2c)) {
+            fB.addListener(lcd);
+
+            String exitline = "";
+            while (!"exit".equalsIgnoreCase(exitline)) {
+                System.out.println("Please input a line");
+                exitline = scanner.nextLine();
+            }
+//            Random r = new Random();
+//            lcd.setRGB(0,0, 255);
+//            for (int i = 0; i < 300; i++) {
+//                lcd.setRGB(r.nextInt(254), r.nextInt(254), r.nextInt(254));
+//                Thread.sleep(r.nextInt(300, 354));
+//            }
+        } catch (IOException | InterruptedException e) {
             log.error(e.getLocalizedMessage(), e);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+    }
 //        log.warn("dps310 loading ");
 //        try (DPS310 dps1 = new DPS310(i2c, DPS310.DPS310_ADDRESS_1);
 //             DPS310 dps2 = new DPS310(i2c, DPS310.DPS310_ADDRESS_2);
-//             Relay relay = new Relay()) {
+//             Relay relay = new Relay(gpioController)) {
 //            DHT11 humiditySensor = new DHT11(0);
 //            relay.setOnLevel(6);
 //            Thread.sleep(2000);
@@ -47,5 +66,5 @@ public class Main {
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
-    }
 }
+

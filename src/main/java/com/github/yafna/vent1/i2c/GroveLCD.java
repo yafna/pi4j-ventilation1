@@ -1,11 +1,13 @@
 package com.github.yafna.vent1.i2c;
 
+import com.github.yafna.vent1.dto.ButtonMatrix;
+import com.github.yafna.vent1.dto.MButtonListener;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 
 import java.io.IOException;
 
-public class GroveLCD implements AutoCloseable {
+public class GroveLCD implements MButtonListener, AutoCloseable {
     public static final int DISPLAY_RGB_ADDR = 0x62;
     public static final int DISPLAY_TEXT_ADDR = 0x3e;
     private static final int LCD_COMMAND = 0x80;
@@ -76,5 +78,26 @@ public class GroveLCD implements AutoCloseable {
     @Override
     public void close() throws Exception {
         clearDisplay();
+    }
+
+    @Override
+    public void buttonClicked(ButtonMatrix type) {
+        try {
+            if (type == ButtonMatrix.S1) {
+                setRGB(255, 0, 0);
+            }
+            if (type == ButtonMatrix.S2) {
+                setRGB(0, 255, 0);
+            }
+            if (type == ButtonMatrix.S3) {
+                setRGB(0, 0, 255);
+            }
+            if (type == ButtonMatrix.S4) {
+                setRGB(255, 0, 255);
+            }
+
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
