@@ -1,11 +1,12 @@
 package com.github.yafna.vent1.relay;
 
-//import com.pi4j.context.Context;
-//import com.pi4j.io.gpio.digital.DigitalOutput;
-//import com.pi4j.io.gpio.digital.DigitalState;
 
-import com.pi4j.io.gpio.*;
-import com.pi4j.wiringpi.GpioUtil;
+import com.pi4j.io.gpio.GpioController;
+import com.pi4j.io.gpio.GpioPinDigitalOutput;
+import com.pi4j.io.gpio.Pin;
+import com.pi4j.io.gpio.PinPullResistance;
+import com.pi4j.io.gpio.PinState;
+import com.pi4j.io.gpio.RaspiPin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Relay implements AutoCloseable{
+public class Relay implements AutoCloseable {
     private static final Logger logger = LoggerFactory.getLogger(Relay.class);
     private final Pin[] wpis = {RaspiPin.GPIO_21, RaspiPin.GPIO_22, RaspiPin.GPIO_23, RaspiPin.GPIO_24, RaspiPin.GPIO_25, RaspiPin.GPIO_29};
     private final List<GpioPinDigitalOutput> relay = new ArrayList<>();

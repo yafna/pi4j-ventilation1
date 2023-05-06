@@ -63,7 +63,7 @@ public class DhtQuery implements Runnable {
         if (j >= 40 && checkParity()) {
             float h = (float) ((dht11_dat[0] << 8) + dht11_dat[1]) / 10;
             if (h > 100) {
-                h = dht11_dat[0] ; // for DHT11
+                h = dht11_dat[0]; // for DHT11
             }
             float c = (float) (((dht11_dat[2] & 0x7F) << 8) + dht11_dat[3]) / 10;
             if (c > 125) {
@@ -78,7 +78,7 @@ public class DhtQuery implements Runnable {
             counter.set(0);
         } else {
             log.info("DTH11 Data not good, skip , step {}", counter.incrementAndGet());
-            if(counter.get() > 10000){
+            if (counter.get() > 10000) {
                 counter.set(100);
             }
         }

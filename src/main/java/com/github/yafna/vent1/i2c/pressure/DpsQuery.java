@@ -66,7 +66,7 @@ public class DpsQuery implements Runnable {
             float prsRawSc = (float) (prsRaw / prsOversampling);
             float prsValue = prsC00 + prsRawSc * (prsC10 + prsRawSc * (prsC20 + prsRawSc * prsC30)) + tempRawSc * prsC01 + tempRawSc * prsRawSc * (prsC11 + prsRawSc * prsC21);
             pressure.set(prsValue);
-            log.debug("dps {} pressure  = {}" , io.getDeviceAddress(), prsValue);
+            log.debug("dps {} pressure  = {}", io.getDeviceAddress(), prsValue);
         } catch (IOException | InterruptedException e) {
             log.error(e.getLocalizedMessage(), e);
         }

@@ -1,7 +1,12 @@
 package com.github.yafna.vent1.buttons;
 
 import com.github.yafna.vent1.dto.MButtonListener;
-import com.pi4j.io.gpio.*;
+import com.pi4j.io.gpio.GpioController;
+import com.pi4j.io.gpio.GpioPinDigitalInput;
+import com.pi4j.io.gpio.GpioPinDigitalOutput;
+import com.pi4j.io.gpio.Pin;
+import com.pi4j.io.gpio.PinPullResistance;
+import com.pi4j.io.gpio.RaspiPin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +24,8 @@ public class FourBlock implements AutoCloseable {
     private GpioPinDigitalOutput l1;
     private GpioPinDigitalInput r1;
     private GpioPinDigitalInput r2;
-private ButtonStateChecker checker;
+    private ButtonStateChecker checker;
+
     public FourBlock(GpioController gpioController) {
         JButton btn = new JButton("ddd");
         btn.addActionListener(actionEvent -> {
@@ -38,7 +44,7 @@ private ButtonStateChecker checker;
     }
 
     public void addListener(MButtonListener listener) {
-checker.addListener(listener);
+        checker.addListener(listener);
     }
 
     public void removeListener(MButtonListener listener) {

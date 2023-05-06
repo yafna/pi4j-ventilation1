@@ -30,7 +30,7 @@ public class ButtonStateChecker implements Runnable {
     @Override
     public void run() {
         int checkedState = Math.max(readLine(l1, new Integer[]{1, 3}), readLine(l2, new Integer[]{2, 4}));
-        if(checkedState > -1 ){
+        if (checkedState > -1) {
             stateArrived(checkedState);
         }
         state = checkedState;

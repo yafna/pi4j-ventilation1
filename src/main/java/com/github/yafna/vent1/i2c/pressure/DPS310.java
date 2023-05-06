@@ -1,8 +1,8 @@
 package com.github.yafna.vent1.i2c.pressure;
 
+import com.github.yafna.vent1.i2c.IO;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
-import com.github.yafna.vent1.i2c.IO;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
@@ -118,8 +118,8 @@ public class DPS310 implements AutoCloseable {
             }
             updateCoeff();
             run();
-        } catch ( IOException e) {
-            log.error("Failed to reset and restart pressure collection , {} " , e.getLocalizedMessage() ,e);
+        } catch (IOException e) {
+            log.error("Failed to reset and restart pressure collection , {} ", e.getLocalizedMessage(), e);
         }
     }
 

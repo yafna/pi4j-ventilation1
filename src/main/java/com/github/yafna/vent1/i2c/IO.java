@@ -5,8 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class IO {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(IO.class);
