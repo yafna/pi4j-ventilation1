@@ -10,7 +10,6 @@ import com.pi4j.io.gpio.RaspiPin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -27,10 +26,6 @@ public class FourBlock implements AutoCloseable {
     private ButtonStateChecker checker;
 
     public FourBlock(GpioController gpioController) {
-        JButton btn = new JButton("ddd");
-        btn.addActionListener(actionEvent -> {
-
-        });
         logger.debug(" Button matrix set up start");
         l2 = gpioController.provisionDigitalOutputPin(wpis[3]);
         l1 = gpioController.provisionDigitalOutputPin(wpis[2]);

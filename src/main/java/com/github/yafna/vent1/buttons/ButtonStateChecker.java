@@ -18,7 +18,7 @@ public class ButtonStateChecker implements Runnable {
     private final GpioPinDigitalInput r2;
     private int state = -1;
 
-    private List<MButtonListener> listeners = new ArrayList<>();
+    private final List<MButtonListener> listeners = new ArrayList<>();
 
     public ButtonStateChecker(GpioPinDigitalOutput l2, GpioPinDigitalOutput l1, GpioPinDigitalInput r1, GpioPinDigitalInput r2) {
         this.l2 = l2;
@@ -41,11 +41,9 @@ public class ButtonStateChecker implements Runnable {
         int res = -1;
         if (r1.getState().isHigh()) {
             res = ints[0];
-            logger.info(" button pressed " + ints[0]);
         }
         if (r2.getState().isHigh()) {
             res = ints[1];
-            logger.info("button pressed " + ints[1]);
         }
         pin.low();
         return res;

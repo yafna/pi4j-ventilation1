@@ -1,23 +1,23 @@
 package com.github.yafna.vent1.dto;
 
 public enum ButtonMatrix {
-    S1,
-    S2,
-    S3,
-    S4;
+    BACK,
+    ENTER,
+    LEFT,
+    RIGHT;
 
     public static ButtonMatrix getByInt(int num) {
         if (num == 1) {
-            return S1;
+            return BACK;
         }
         if (num == 2) {
-            return S2;
+            return ENTER;
         }
         if (num == 3) {
-            return S3;
+            return LEFT;
         }
         if (num == 4) {
-            return S4;
+            return RIGHT;
         }
         return null;
     }
